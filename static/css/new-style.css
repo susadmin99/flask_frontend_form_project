@@ -1,0 +1,69 @@
+:root {
+  --primary-color: #571845;
+  --secondary-color: #fd5734;
+}
+
+/*For simple labels before input fields*/
+.form-group-mandatory::after {
+  content: " *";
+  color: #c0392b;
+  font-weight: 700;
+}
+
+.form-group > input:focus {
+  border: 3px solid var(--primary-color) !important;
+}
+
+.form-group > select:focus {
+  border: 3px solid var(--primary-color) !important;
+}
+
+legend {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  margin: 0 0 40px;
+  text-decoration: none;
+}
+
+#submit-button:hover {
+  background-color: var(--secondary-color) !important;
+  border: 2px solid var(--secondary-color) !important;
+}
+
+#submit-button:focus {
+  background-color: var(--secondary-color) !important;
+  border: 3px solid var(--primary-color) !important;
+  padding: 0;
+}
+
+.error-text {
+  background-color: var(--secondary-color);
+  color: #fff;
+  display: none;
+  line-height: 1;
+  margin: 0;
+  padding: 2px 3px;
+  vertical-align: top;
+}
+
+.error-text.visible {
+  display: block;
+}
+
+.invalid {
+  border: 3px solid var(--secondary-color) !important;
+}
+
+.form-group-mandatory:invalid {
+  border: 3px solid var(--secondary-color) !important;
+}
+
+.form-group-mandatory:invalid:required {
+  border: 3px solid var(--secondary-color) !important;
+}
+
+.form-group-mandatory:valid {
+  border: 1px solid green !important;
+}

@@ -1,0 +1,20 @@
+Can attend all dates: True
+Eligible to attend: True
+First Name: test first name
+Last Name: test last name
+Email: test@test.test
+Phone: 01223124
+Address 1: drfgerstg ergher tetrh e, Address 2: 
+City: test city
+Post code: 1010
+Gender: 2
+Birthday 
+Day: 2
+Month: 2
+Year: 2020
+Ethnicity: 3
+Disability: 2
+Satisfaction Level: 2
+Educational Qualification: 3
+Privacy Policy: True
+News Subscription: False
