@@ -1,8 +1,4 @@
 from flask import Flask, render_template, request
-from flask_assets import Environment, Bundle
-from flask_wtf import FlaskForm
-from wtforms import StringField
-from wtforms.validators import DataRequired, Length
 from forms import RegisterForm
 
 app = Flask(__name__)
@@ -11,16 +7,15 @@ app.config['WTF_CSRF_ENABLED'] = False
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    form = RegisterForm()
+    form = RegisterForm() #Creating the form
 
-    if request.method == "POST":
+    if request.method == "POST": #First I check if it is a post request so it only runs if a form submit happened
         print("----POST REQUEST RECEIVED----")
-        print(f"Form data: {request.form}")
 
-        if form.validate_on_submit():
+        if form.validate_on_submit(): #Here I check for server-side validation it must happen after client-side validation was already successful
             print("----FORM VALIDATED SUCCESSFULLY----")
 
-            with open("output.txt", "w", encoding="utf-8") as file:
+            with open("output.txt", "w", encoding="utf-8") as file: #Opening a file and writing each input field's value and checkbox's value into the file as a new line
                 file.write(f"Can attend all dates: {form.can_attend_all_dates.data}\n")
                 file.write(f"Eligible to attend: {form.eligible_to_attend.data}\n")
 
@@ -47,7 +42,7 @@ def home():
                 file.write(f"News Subscription: {form.news_subscription.data}\n")
 
             return "Thank you for your registration. <br> Data saved! <a href='/'>Go back</a>"
-        elif form.is_submitted() and not form.validate():
+        elif form.is_submitted() and not form.validate(): #Created a check here for server-side validation fail, it should not run if the client-side validation is active because that should take care of the fields and responses to the user but if for instance javascript is turned off in the user's browser then it will also give some feedback to the user if some mandatory input fields were missed. You can check this response in the form.html line: 630-640.
             print("----FORM VALIDATION FAILED----")
             print(f"Form errors: {form.errors}")
 

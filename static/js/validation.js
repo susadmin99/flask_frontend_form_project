@@ -1,47 +1,46 @@
-// Get the form
 const form = document.getElementById("dhsc_east_copy_page_new_signup_form");
 
-// Determine input element + error target based on element structure
+//This function resolves the element if it is a select, input, label or an error span
 function resolveElements(mandatoryEl) {
   let inputEl = null;
   let errorTarget = null;
 
-  // CASE 1: Mandatory class is on a LABEL (normal input/select)
   if (mandatoryEl.tagName.toLowerCase() === "label") {
     inputEl = mandatoryEl.nextElementSibling;
 
     if (!inputEl) return null;
 
-    // If checkbox, special rule applies
     if (inputEl.type === "checkbox") {
-      // Checkbox validation message goes 2 siblings after input
       errorTarget = inputEl.nextElementSibling?.nextElementSibling || null;
     } else {
-      // Normal input/select → error is in first next sibling after the input
-      errorTarget = inputEl.nextElementSibling || null;
-    }
-  }
+      let sibling = inputEl.nextElementSibling;
 
-  // CASE 2: Mandatory class is ON the element AFTER checkbox
-  else {
-    // Checkbox input is the previous sibling
+      while (sibling) {
+        if (sibling.tagName.toLowerCase() === "span") {
+          break;
+        }
+        sibling = sibling.nextElementSibling;
+      }
+      errorTarget = sibling || null;
+    }
+  } else {
     inputEl = mandatoryEl.previousElementSibling;
 
     if (!inputEl || inputEl.type !== "checkbox") return null;
 
-    // Checkbox error target = 2nd next sibling of the mandatory element
     errorTarget = mandatoryEl.nextElementSibling?.nextElementSibling || null;
   }
 
   return { inputEl, errorTarget };
 }
 
-// Email check with regex
+//Email check with regex
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-// Validation for each element
+//Validation for each element
+//First resolves what element is it and continues with checking the value of the input field or the select or if the element is email checks the email format
 function validateGroup(mandatoryEl) {
   const resolved = resolveElements(mandatoryEl);
   if (!resolved) return true;
@@ -71,10 +70,12 @@ function validateGroup(mandatoryEl) {
     errorTarget.style.display = "none";
   } else {
     if (inputEl.type === "email") {
+      //Custom check for the email input if the format is incorrect
       errorTarget.textContent = "Email is not a valid format";
       errorTarget.style.display = "inline-block";
     } else {
       if (mandatoryEl.textContent.length <= 10) {
+        //Check if the label has longer name length than 10 characters then use simple response if less or equal 10 then use the label also with custom message
         errorTarget.textContent =
           mandatoryEl.textContent + " is a required field";
       } else {
@@ -87,6 +88,7 @@ function validateGroup(mandatoryEl) {
   return isValid;
 }
 
+//Get all of the elements with mandatory classes and validate each one by one
 function validateAll() {
   const mandatoryEls = document.querySelectorAll(".form-group-mandatory");
   let allValid = true;
@@ -106,27 +108,38 @@ form.addEventListener("submit", (e) => {
   }
 });
 
-// Live validations
-document.querySelectorAll("input, select").forEach((el) => {
-  el.addEventListener("input", () => {
-    const mandatoryEl =
-      el.closest(".form-group-mandatory") ||
-      (el.nextElementSibling?.classList?.contains("form-group-mandatory") &&
-        el.nextElementSibling) ||
-      (el.previousElementSibling?.classList?.contains("form-group-mandatory") &&
-        el.previousElementSibling);
+//Live validations
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("label.form-group-mandatory").forEach((label) => {
+    const input = label.nextElementSibling; // input immediately after label
 
-    if (mandatoryEl) validateGroup(mandatoryEl);
+    if (!input) return;
+
+    input.addEventListener("input", () => {
+      const span = input.nextElementSibling;
+
+      if (span && span.tagName.toLowerCase() === "span") {
+        if (input.value.trim() !== "") {
+          validateGroup(label);
+        }
+      }
+    });
   });
 
-  el.addEventListener("change", () => {
-    const mandatoryEl =
-      el.closest(".form-group-mandatory") ||
-      (el.nextElementSibling?.classList?.contains("form-group-mandatory") &&
-        el.nextElementSibling) ||
-      (el.previousElementSibling?.classList?.contains("form-group-mandatory") &&
-        el.previousElementSibling);
+  document.querySelectorAll("b.form-group-mandatory").forEach((b) => {
+    const input = b.previousElementSibling; // input directly before <b>
 
-    if (mandatoryEl) validateGroup(mandatoryEl);
+    if (!input || input.type !== "checkbox") return;
+
+    input.addEventListener("change", () => {
+      const span = b.nextElementSibling.nextElementSibling;
+
+      if (span && span.tagName.toLowerCase() === "span") {
+        if (input.checked) {
+          span.textContent = "";
+          span.style.display = "none";
+        }
+      }
+    });
   });
 });

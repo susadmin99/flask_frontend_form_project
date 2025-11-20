@@ -2,6 +2,10 @@ from flask_wtf import FlaskForm
 from wtforms import SelectField, validators, BooleanField, StringField, SubmitField
 from wtforms.validators import Email, InputRequired, Length, DataRequired
 
+#In this file I programmatically created all of the elements which the user can get interacted with
+#Most of the elements then being used in the form.html as a python(jinja) inline code with all of the necessary attributes(classes, required, id, name, etc.)
+#I did it like this because I wanted to apply both client-side validation and server-side validation and in this case the validators.DataRequired or validators.InputRequired serves as the server-side validation
+
 class RegisterForm(FlaskForm):
     cant_validate = ""
 
